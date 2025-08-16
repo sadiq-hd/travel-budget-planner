@@ -1,1 +1,249 @@
-<p>home works!</p>
+<!-- src/app/pages/home/home.component.html -->
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  
+  <!-- Hero Section -->
+  <div class="text-center mb-12">
+    <div class="flex justify-center mb-6">
+      <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center">
+        <span class="text-4xl">🧳</span>
+      </div>
+    </div>
+    
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+      {{ translate('home.welcome', 'مرحباً بك في مخطط ميزانية السفر') }}
+    </h1>
+    
+    <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+      {{ translate('home.description', 'خطط لرحلتك القادمة بذكاء. احسب مصاريفك، خطط ميزانيتك، ووفر بطريقة منظمة لتحقيق هدف السفر') }}
+    </p>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+      
+      <!-- Total Expenses -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        <div class="flex items-center justify-center mb-3">
+          <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-1">
+          {{ translate('home.total.expenses', 'إجمالي المصاريف') }}
+        </h3>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ formatAmount((totalExpenses$ | async) ?? 0) }}
+        </p>
+      </div>
+
+      <!-- Expense Count -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        <div class="flex items-center justify-center mb-3">
+          <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-1">
+          {{ translate('home.expense.count', 'عدد المصاريف') }}
+        </h3>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ (expenseStats$ | async)?.expenseCount ?? 0 }}
+        </p>
+      </div>
+
+      <!-- Budget Status -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+        <div class="flex items-center justify-center mb-3">
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-1">
+          {{ translate('home.budget.status', 'حالة الميزانية') }}
+        </h3>
+        <p class="text-2xl font-bold text-gray-900">
+          {{ hasBudgetPlan ? translate('home.planned', 'مخططة') : translate('home.not.planned', 'غير مخططة') }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+    
+    <!-- Start Planning -->
+    <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-8 text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+      <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+      
+      <div class="relative z-10">
+        <div class="text-4xl mb-4">💰</div>
+        <h3 class="text-2xl font-bold mb-3">
+          {{ translate('home.start.planning', 'ابدأ التخطيط') }}
+        </h3>
+        <p class="text-white/90 mb-6">
+          {{ translate('home.planning.desc', 'خطط ميزانيتك واحسب المبلغ المطلوب توفيره شهرياً') }}
+        </p>
+        <a 
+          routerLink="/budget-management"
+          class="inline-flex items-center px-6 py-3 bg-white text-purple-600 rounded-xl font-semibold hover:bg-white/90 transition-colors duration-200">
+          {{ translate('home.start.now', 'ابدأ الآن') }}
+          <svg class="w-5 h-5 ms-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+      <div class="text-4xl mb-4">⚡</div>
+      <h3 class="text-2xl font-bold text-gray-900 mb-3">
+        {{ translate('home.quick.actions', 'إجراءات سريعة') }}
+      </h3>
+      <p class="text-gray-600 mb-6">
+        {{ translate('home.actions.desc', 'أضف مصاريف جديدة أو راجع ميزانيتك الحالية') }}
+      </p>
+      
+      <div class="space-y-3">
+        <a 
+          routerLink="/budget-management"
+          class="flex items-center w-full p-4 text-start bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors duration-200">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center me-3">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="font-semibold text-gray-900">
+              {{ translate('home.add.expense', 'إضافة مصروف') }}
+            </div>
+            <div class="text-sm text-gray-500">
+              {{ translate('home.add.expense.desc', 'أضف مصروف جديد لرحلتك') }}
+            </div>
+          </div>
+        </a>
+
+        <a 
+          routerLink="/budget-management"
+          class="flex items-center w-full p-4 text-start bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors duration-200">
+          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center me-3">
+            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="font-semibold text-gray-900">
+              {{ translate('home.view.budget', 'عرض الميزانية') }}
+            </div>
+            <div class="text-sm text-gray-500">
+              {{ translate('home.view.budget.desc', 'راجع خطة ميزانيتك والتقارير') }}
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">
+        {{ translate('home.features', 'المميزات') }}
+      </h2>
+      <p class="text-gray-600">
+        {{ translate('home.features.desc', 'كل ما تحتاجه لتخطيط رحلة ناجحة') }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- Expense Tracking -->
+      <div class="text-center p-6">
+        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">
+          {{ translate('home.feature.tracking', 'تتبع المصاريف') }}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {{ translate('home.feature.tracking.desc', 'أضف وصنف مصاريف رحلتك بسهولة') }}
+        </p>
+      </div>
+
+      <!-- Currency Conversion -->
+      <div class="text-center p-6">
+        <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">
+          {{ translate('home.feature.currency', 'تحويل العملات') }}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {{ translate('home.feature.currency.desc', 'تحويل تلقائي بأسعار صرف محدثة') }}
+        </p>
+      </div>
+
+      <!-- Budget Planning -->
+      <div class="text-center p-6">
+        <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">
+          {{ translate('home.feature.planning', 'تخطيط الميزانية') }}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {{ translate('home.feature.planning.desc', 'احسب المبلغ المطلوب توفيره شهرياً') }}
+        </p>
+      </div>
+
+      <!-- Reports & Charts -->
+      <div class="text-center p-6">
+        <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">
+          {{ translate('home.feature.reports', 'التقارير والرسوم') }}
+        </h3>
+        <p class="text-sm text-gray-600">
+          {{ translate('home.feature.reports.desc', 'مخططات بيانية وتحليلات مفصلة') }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Get Started CTA -->
+  <div class="text-center mt-12">
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-8 border border-blue-100">
+      <h2 class="text-2xl font-bold text-gray-900 mb-4">
+        {{ translate('home.ready', 'جاهز لبدء التخطيط؟') }}
+      </h2>
+      <p class="text-gray-600 mb-6">
+        {{ translate('home.ready.desc', 'ابدأ الآن في تخطيط ميزانية رحلتك القادمة') }}
+      </p>
+      <a 
+        routerLink="/budget-management"
+        class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 hover:scale-105 shadow-lg">
+        <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        {{ translate('home.start.planning', 'ابدأ التخطيط') }}
+      </a>
+    </div>
+  </div>
+</div>

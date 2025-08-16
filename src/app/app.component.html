@@ -1,11 +1,9 @@
 <!-- src/app/app.component.html -->
 <app-header></app-header>
 
-<app-expense-form
-  [isOpen]="showExpenseForm"
-  [expense]="selectedExpense"
-  [targetCurrency]="targetCurrency"
-  (closeForm)="closeExpenseForm()"
-  (expenseSaved)="onExpenseSaved($event)">
-</app-expense-form>
 
+
+<!-- Main Content Area -->
+<main class="min-h-screen bg-gray-50">
+  <router-outlet></router-outlet>
+</main>

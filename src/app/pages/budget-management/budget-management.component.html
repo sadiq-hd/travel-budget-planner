@@ -1,1 +1,195 @@
-<p>budget-management works!</p>
+<!-- src/app/pages/budget-management/budget-management.component.html -->
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  
+  <!-- Page Header -->
+  <div class="mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          {{ translate('budget.management', 'إدارة الميزانية') }}
+        </h1>
+        <p class="text-gray-600">
+          {{ translate('budget.management.desc', 'خطط ميزانيتك، تتبع مصاريفك، وحلل بياناتك') }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="bg-white rounded-2xl shadow-lg mb-8 overflow-hidden">
+    <div class="border-b border-gray-200">
+      <nav class="flex space-x-8 rtl:space-x-reverse px-6" aria-label="Tabs">
+        
+        <!-- Expenses Tab -->
+        <button
+          (click)="setActiveTab('expenses')"
+          class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200"
+          [class.border-blue-500]="activeTab === 'expenses'"
+          [class.text-blue-600]="activeTab === 'expenses'"
+          [class.border-transparent]="activeTab !== 'expenses'"
+          [class.text-gray-500]="activeTab !== 'expenses'"
+          [class.hover:text-gray-700]="activeTab !== 'expenses'"
+          [class.hover:border-gray-300]="activeTab !== 'expenses'">
+          
+          <div class="flex items-center">
+            <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            {{ translate('expenses', 'المصاريف') }}
+          </div>
+        </button>
+
+        <!-- Budget Tab -->
+        <button
+          (click)="setActiveTab('budget')"
+          class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200"
+          [class.border-blue-500]="activeTab === 'budget'"
+          [class.text-blue-600]="activeTab === 'budget'"
+          [class.border-transparent]="activeTab !== 'budget'"
+          [class.text-gray-500]="activeTab !== 'budget'"
+          [class.hover:text-gray-700]="activeTab !== 'budget'"
+          [class.hover:border-gray-300]="activeTab !== 'budget'">
+          
+          <div class="flex items-center">
+            <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+            {{ translate('budget.planner', 'مخطط الميزانية') }}
+          </div>
+        </button>
+
+        <!-- Charts Tab -->
+        <button
+          (click)="setActiveTab('charts')"
+          class="py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200"
+          [class.border-blue-500]="activeTab === 'charts'"
+          [class.text-blue-600]="activeTab === 'charts'"
+          [class.border-transparent]="activeTab !== 'charts'"
+          [class.text-gray-500]="activeTab !== 'charts'"
+          [class.hover:text-gray-700]="activeTab !== 'charts'"
+          [class.hover:border-gray-300]="activeTab !== 'charts'">
+          
+          <div class="flex items-center">
+            <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+            </svg>
+            {{ translate('chart.title', 'الرسوم البيانية') }}
+          </div>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="space-y-8">
+    
+    <!-- Expenses Tab Content -->
+    <div *ngIf="activeTab === 'expenses'">
+      <app-expense-list
+        [targetCurrency]="targetCurrency"
+        (editExpense)="onEditExpense($event)"
+        (addExpense)="onAddExpense()">
+      </app-expense-list>
+    </div>
+
+    <!-- Budget Tab Content -->
+    <div *ngIf="activeTab === 'budget'">
+      <app-budget-planner
+        [targetCurrency]="targetCurrency"
+        (budgetCreated)="onBudgetCreated($event)">
+      </app-budget-planner>
+    </div>
+
+    <!-- Charts Tab Content -->
+    <div *ngIf="activeTab === 'charts'">
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        
+        <!-- Main Chart -->
+        <div class="xl:col-span-2">
+          <app-expense-chart
+            [targetCurrency]="targetCurrency"
+            [chartType]="'donut'">
+          </app-expense-chart>
+        </div>
+
+        <!-- Additional Charts/Stats could go here -->
+        <!-- 
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-4">
+            Monthly Breakdown
+          </h3>
+          // Additional chart component
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h3 class="text-lg font-bold text-gray-900 mb-4">
+            Currency Distribution
+          </h3>
+          // Additional chart component
+        </div>
+        -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions Floating Button (Mobile) -->
+  <div class="fixed bottom-6 right-6 sm:hidden">
+    <div class="relative">
+      <!-- Main Action Button -->
+      <button
+        (click)="onAddExpense()"
+        class="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 flex items-center justify-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tips & Guidance Section -->
+  <div class="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
+    <div class="flex items-start">
+      <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center me-4 mt-1">
+        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      
+      <div>
+        <h3 class="text-lg font-semibold text-gray-900 mb-2">
+          {{ translate('tips.title', 'نصائح للاستخدام الأمثل') }}
+        </h3>
+        
+        <div class="space-y-2 text-sm text-gray-700">
+          <p>
+            <span class="font-medium">1.</span> 
+            {{ translate('tip.1', 'ابدأ بإضافة جميع المصاريف المتوقعة في تاب "المصاريف"') }}
+          </p>
+          <p>
+            <span class="font-medium">2.</span> 
+            {{ translate('tip.2', 'استخدم تاب "مخطط الميزانية" لحساب المبلغ المطلوب توفيره شهرياً') }}
+          </p>
+          <p>
+            <span class="font-medium">3.</span> 
+            {{ translate('tip.3', 'راجع تاب "الرسوم البيانية" لتحليل توزيع مصاريفك بصرياً') }}
+          </p>
+          <p>
+            <span class="font-medium">4.</span> 
+            {{ translate('tip.4', 'يمكنك تغيير العملة المستهدفة لرؤية جميع المبالغ محولة') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Expense Form Modal -->
+<app-expense-form
+  [isOpen]="isExpenseFormOpen"
+  [expense]="expenseToEdit"
+  [targetCurrency]="targetCurrency"
+  (closeForm)="onCloseExpenseForm()"
+  (expenseSaved)="onExpenseSaved($event)">
+</app-expense-form>

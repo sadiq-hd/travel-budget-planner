@@ -1,24 +1,51 @@
 // src/app/app.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { HeaderComponent } from './components/header/header.component';
 import { ExpenseFormComponent } from './components/expense-form/expense-form.component';
+import { LanguageService, Language } from './services/language.service';
 import { Expense } from './models/expense';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, ExpenseFormComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, ExpenseFormComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'travel-budget-planner';
+export class AppComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   
-  // للتحكم في النموذج
+  title = 'travel-budget-planner';
+  currentLanguage: Language = 'ar';
+  
+  // للتحكم في النموذج (مشترك عبر التطبيق)
   showExpenseForm = false;
   selectedExpense: Expense | null = null;
   targetCurrency = 'SAR';
+
+  constructor(
+    private languageService: LanguageService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    // الاشتراك في تغيير اللغة
+    this.languageService.currentLanguage$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(language => {
+        this.currentLanguage = language;
+        this.cdr.detectChanges();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   /**
    * فتح نموذج إضافة مصروف
@@ -49,7 +76,6 @@ export class AppComponent {
    */
   onExpenseSaved(expense: Expense): void {
     console.log('Expense saved:', expense);
-    // هنا يمكن إضافة منطق إضافي
     this.closeExpenseForm();
   }
 }
