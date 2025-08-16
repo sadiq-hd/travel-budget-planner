@@ -1,1 +1,11 @@
+<!-- src/app/app.component.html -->
 <app-header></app-header>
+
+<app-expense-form
+  [isOpen]="showExpenseForm"
+  [expense]="selectedExpense"
+  [targetCurrency]="targetCurrency"
+  (closeForm)="closeExpenseForm()"
+  (expenseSaved)="onExpenseSaved($event)">
+</app-expense-form>
+
