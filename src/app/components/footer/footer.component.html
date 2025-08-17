@@ -1,0 +1,16 @@
+<!-- src/app/components/footer/footer.component.html -->
+<footer class="bg-gradient-to-r from-slate-800 via-gray-800 to-slate-900 border-t border-gray-700/50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="text-center">
+      <p class="text-gray-300 text-sm">
+        {{ isArabic() ? 'تم تطوير' : 'Developed with' }}
+        <span class="inline-flex items-center mx-2">
+          <span class="text-red-400 animate-pulse text-lg">❤️</span>
+        </span>
+        <span class="font-semibold text-emerald-400">{{ getAppTitle() }}</span>
+        {{ isArabic() ? 'بواسطة' : 'by' }}
+        <span class="font-bold text-white mx-1">{{ getDeveloperName() }}</span>
+      </p>
+    </div>
+  </div>
+</footer>

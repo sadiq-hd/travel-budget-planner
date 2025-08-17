@@ -5,6 +5,7 @@ import { RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { ExpenseFormComponent } from './components/expense-form/expense-form.component';
 import { LanguageService, Language } from './services/language.service';
 import { Expense } from './models/expense';
@@ -12,7 +13,7 @@ import { Expense } from './models/expense';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, ExpenseFormComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, ExpenseFormComponent, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

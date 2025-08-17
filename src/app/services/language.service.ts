@@ -21,6 +21,8 @@ export class LanguageService {
     ar: {
       // العامة
       'app.title': 'مخطط ميزانية السفر',
+       'developer.name': 'صادق الدبيسي',
+
       'language.switch': 'English',
       'save': 'حفظ',
       'cancel': 'إلغاء',
@@ -178,6 +180,8 @@ export class LanguageService {
     en: {
       // General
       'app.title': 'Travel Budget Planner',
+            'developer.name': 'Sadiq Aldubaisi',
+
       'language.switch': 'العربية',
       'save': 'Save',
       'cancel': 'Cancel',
@@ -190,6 +194,7 @@ export class LanguageService {
       'actions': 'Actions',
       'months': 'months',
       'categories': 'categories',
+      
 
       // Home Page
       'home.welcome': 'Welcome to Travel Budget Planner',
