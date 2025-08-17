@@ -1,1 +1,195 @@
-<p>expense-chart works!</p>
+<!-- src/app/components/expense-chart/expense-chart.component.html -->
+
+<div class="bg-white rounded-2xl shadow-lg p-6">
+  
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center">
+      <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl flex items-center justify-center me-3">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900">
+        {{ translate('chart.title', 'توزيع المصاريف') }}
+      </h3>
+    </div>
+
+    <!-- Chart Type Selector -->
+    <div class="flex bg-gray-100 rounded-lg p-1">
+      <button
+        (click)="changeChartType('donut')"
+        class="px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200"
+        [class.bg-white]="chartType === 'donut'"
+        [class.text-gray-900]="chartType === 'donut'"
+        [class.text-gray-600]="chartType !== 'donut'"
+        [class.shadow-sm]="chartType === 'donut'">
+        🍩 {{ translate('chart.donut', 'دائري مفرغ') }}
+      </button>
+      <button
+        (click)="changeChartType('pie')"
+        class="px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200"
+        [class.bg-white]="chartType === 'pie'"
+        [class.text-gray-900]="chartType === 'pie'"
+        [class.text-gray-600]="chartType !== 'pie'"
+        [class.shadow-sm]="chartType === 'pie'">
+        🥧 {{ translate('chart.pie', 'دائري') }}
+      </button>
+      <button
+        (click)="changeChartType('bar')"
+        class="px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200"
+        [class.bg-white]="chartType === 'bar'"
+        [class.text-gray-900]="chartType === 'bar'"
+        [class.text-gray-600]="chartType !== 'bar'"
+        [class.shadow-sm]="chartType === 'bar'">
+        📊 {{ translate('chart.bar', 'أعمدة') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Chart Content -->
+  <div *ngIf="!isEmpty; else emptyState">
+    <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+      
+      <!-- Chart Canvas -->
+      <div class="flex-shrink-0">
+        <canvas
+          #chartCanvas
+          [width]="280"
+          [height]="280"
+          class="max-w-full h-auto">
+        </canvas>
+      </div>
+
+      <!-- Legend & Statistics -->
+      <div class="flex-1 w-full">
+        
+        <!-- Total Summary -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
+          <div class="text-center">
+            <p class="text-sm text-gray-600 mb-1">
+              {{ translate('expenses.total', 'إجمالي المصاريف') }}
+            </p>
+            <p class="text-2xl font-bold text-gray-900">
+              {{ formatAmount(totalAmount) }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="space-y-3">
+          <h4 class="font-semibold text-gray-900 mb-3">
+            {{ translate('chart.breakdown', 'التفصيل') }}
+          </h4>
+          
+          <div 
+            *ngFor="let item of chartDataArray; trackBy: trackByChartData"
+            class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            
+            <!-- Category Info -->
+            <div class="flex items-center">
+              <div 
+                class="w-4 h-4 rounded-full me-3"
+                [style.background-color]="item.color">
+              </div>
+              <div class="flex items-center">
+                <span class="text-lg me-2">{{ item.icon }}</span>
+                <span class="font-medium text-gray-900">{{ item.label }}</span>
+              </div>
+            </div>
+
+            <!-- Value & Percentage -->
+            <div class="text-end">
+              <div class="font-bold text-gray-900">
+                {{ formatAmount(item.value) }}
+              </div>
+              <div class="text-sm text-gray-500">
+                {{ formatPercentage(item.percentage) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mt-6 grid grid-cols-2 gap-4">
+          
+          <!-- Largest Category -->
+          <div class="text-center p-3 bg-green-50 rounded-lg">
+<div class="text-2xl mb-1">{{ (chartDataArray[0] | json) ? chartDataArray[0].icon : '📊' }}</div>
+            <div class="text-xs text-green-600 font-medium">
+              {{ translate('chart.largest', 'الأكبر') }}
+            </div>
+            <div class="text-sm font-bold text-green-900">
+      {{ chartDataArray[0].label }}
+    </div>
+  </div>
+
+          <!-- Number of Categories -->
+          <div class="text-center p-3 bg-blue-50 rounded-lg">
+            <div class="text-2xl mb-1">📊</div>
+            <div class="text-xs text-blue-600 font-medium">
+              {{ translate('chart.categories', 'الفئات') }}
+            </div>
+            <div class="text-sm font-bold text-blue-900">
+              {{ chartDataArray.length }} {{ translate('categories', 'فئة') }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <ng-template #emptyState>
+    <div class="text-center py-12">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+        </svg>
+      </div>
+      
+      <h3 class="text-lg font-medium text-gray-900 mb-2">
+        {{ translate('chart.no.data', 'لا توجد بيانات لعرضها') }}
+      </h3>
+      
+      <p class="text-gray-600 mb-6">
+        {{ translate('chart.no.data.description', 'أضف بعض المصاريف لمشاهدة التوزيع في المخطط') }}
+      </p>
+
+      <!-- Sample Chart Preview -->
+      <div class="bg-gray-50 rounded-xl p-6 max-w-sm mx-auto">
+        <div class="w-24 h-24 mx-auto mb-4 relative">
+          <!-- Sample Donut Chart -->
+          <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#E5E7EB" stroke-width="20"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#3B82F6" stroke-width="20" 
+                    stroke-dasharray="60 40" stroke-dashoffset="0" opacity="0.3"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#8B5CF6" stroke-width="20" 
+                    stroke-dasharray="30 70" stroke-dashoffset="-60" opacity="0.3"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#EF4444" stroke-width="20" 
+                    stroke-dasharray="20 80" stroke-dashoffset="-90" opacity="0.3"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-xs text-gray-500">{{ translate('chart.preview', 'معاينة') }}</span>
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <div class="flex items-center text-xs text-gray-500">
+            <div class="w-3 h-3 bg-blue-400 rounded-full me-2 opacity-30"></div>
+            <span>✈️ {{ translate('category.flights', 'طيران') }}</span>
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <div class="w-3 h-3 bg-purple-400 rounded-full me-2 opacity-30"></div>
+            <span>🏨 {{ translate('category.accommodation', 'إقامة') }}</span>
+          </div>
+          <div class="flex items-center text-xs text-gray-500">
+            <div class="w-3 h-3 bg-red-400 rounded-full me-2 opacity-30"></div>
+            <span>🍽️ {{ translate('category.food', 'طعام') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

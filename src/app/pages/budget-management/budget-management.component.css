@@ -1,0 +1,19 @@
+/* تحسينات للـ Tabs */
+.tab-content-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.tab-content-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+/* تحسين الـ Fixed Button للجوال */
+@media (max-width: 640px) {
+  .fixed.bottom-6.right-6 {
+    /* تأكد من عدم تعارضه مع المحتوى */
+    z-index: 40;
+  }
+}
